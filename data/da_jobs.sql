@@ -87,20 +87,70 @@ WHERE star_rating IS NOT NULL
 GROUP BY company
 ORDER BY avg_rating DESC;
 
---
+--a: 6 way tie???
 
 -- 11.	Find all the job titles that contain the word ‘Analyst’. How many different job titles are there? 
 
 SELECT title
 FROM data_analyst_jobs
-WHERE title LIKE '%Analyst';
+WHERE title LIKE '%Analyst%';
 
---a: 1071
+--a: 1636
+
+SELECT COUNT (DISTINCT title)
+FROM data_analyst_jobs
+WHERE title LIKE '%Analyst%';
+
+--a: 754
 
 -- 12.	How many different job titles do not contain either the word ‘Analyst’ or the word ‘Analytics’? What word do these positions have in common?
 
+SELECT DISTINCT title
+FROM data_analyst_jobs
+WHERE title NOT LIKE '%_nalyst%'
+	AND title NOT LIKE '%_nalytics%'
+	AND title NOT LIKE '%ANALYST%'
+	AND title NOT LIKE '%ANALYTICS%';
+
+--a: 4. They contain the word Tableau
+
 -- **BONUS:**
 -- You want to understand which jobs requiring SQL are hard to fill. Find the number of jobs by industry (domain) that require SQL and have been posted longer than 3 weeks. 
+
+SELECT COUNT(DISTINCT title) AS job_count, domain AS industry
+FROM data_analyst_jobs
+WHERE days_since_posting > 21
+	AND skill LIKE '%SQL%'
+GROUP BY domain;
+
 --  - Disregard any postings where the domain is NULL. 
+SELECT COUNT(DISTINCT title) AS job_count, domain AS industry
+FROM data_analyst_jobs
+WHERE days_since_posting > 21
+	AND skill LIKE '%SQL%'
+	AND domain IS NOT NULL
+GROUP BY domain;
+
 --  - Order your results so that the domain with the greatest number of `hard to fill` jobs is at the top. 
---   - Which three industries are in the top 4 on this list? How many jobs have been listed for more than 3 weeks for each of the top 4?
+SELECT COUNT(DISTINCT title) AS job_count, domain AS industry
+FROM data_analyst_jobs
+WHERE days_since_posting > 21
+	AND skill LIKE '%SQL%'
+	AND domain IS NOT NULL
+GROUP BY domain
+ORDER BY job_count DESC;
+
+--   - Which 4 industries are in the top 4 on this list? How many jobs have been listed for more than 3 weeks for each of the top 4?
+
+--a: 
+-- 42	"Internet and Software"
+-- 40	"Health Care"
+-- 38	"Banks and Financial Services"
+-- 31	"Consulting and Business Services"
+
+--what are those Retail jobs? 
+SELECT *
+FROM data_analyst_jobs
+WHERE days_since_posting > 21
+	AND skill LIKE '%SQL%'
+	AND domain = 'Retail';
