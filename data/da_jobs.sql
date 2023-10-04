@@ -60,12 +60,42 @@ FROM data_analyst_jobs;
 --a: 881
 
 -- 8.	How many unique job titles are there for California companies?
+SELECT COUNT (DISTINCT title)
+FROM data_analyst_jobs
+WHERE location = 'CA';
+
+--a: 230
 
 -- 9.	Find the name of each company and its average star rating for all companies that have more than 5000 reviews across all locations. How many companies are there with more that 5000 reviews across all locations?
 
+SELECT company, AVG(star_rating) AS avg_rating
+FROM data_analyst_jobs
+GROUP BY company
+WHERE star_rating IS NOT NULL
+	AND company IS NOT NULL
+	AND review_count > 5000;	
+
+--a: 40
+
 -- 10.	Add the code to order the query in #9 from highest to lowest average star rating. Which company with more than 5000 reviews across all locations in the dataset has the highest star rating? What is that rating?
 
+SELECT company, AVG(star_rating) AS avg_rating
+FROM data_analyst_jobs
+WHERE star_rating IS NOT NULL
+	AND company IS NOT NULL
+	AND review_count > 5000
+GROUP BY company
+ORDER BY avg_rating DESC;
+
+--
+
 -- 11.	Find all the job titles that contain the word ‘Analyst’. How many different job titles are there? 
+
+SELECT title
+FROM data_analyst_jobs
+WHERE title LIKE '%Analyst';
+
+--a: 1071
 
 -- 12.	How many different job titles do not contain either the word ‘Analyst’ or the word ‘Analytics’? What word do these positions have in common?
 
